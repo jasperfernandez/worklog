@@ -109,12 +109,12 @@ const logout = () => {
                             </div>
                         </div>
                         <div class="mt-4">
-                            <Link
+                            <PrimaryButtonLink
                                 :href="route('worklogs.index')"
-                                class="block w-full rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-500 dark:bg-green-500 dark:hover:bg-green-400"
+                                class="block w-full bg-success-600 hover:bg-success-500 dark:bg-success-500 dark:hover:bg-success-400"
                             >
                                 View All Logs
-                            </Link>
+                            </PrimaryButtonLink>
                         </div>
                     </Card>
 
@@ -130,7 +130,7 @@ const logout = () => {
                             </div>
                         </div>
                         <div class="mt-4">
-                            <PrimaryButton class="w-full bg-purple-600 dark:bg-purple-400"> View Analytics </PrimaryButton>
+                            <PrimaryButton class="w-full bg-purple-600 hover:bg-purple-500 dark:bg-purple-500 dark:hover:bg-purple-400"> View Analytics </PrimaryButton>
                         </div>
                     </Card>
                 </div>
