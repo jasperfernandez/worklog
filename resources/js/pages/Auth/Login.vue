@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import Checkbox from '@/components/Checkbox.vue';
 import FormInput from '@/components/FormInput.vue';
-import Heading from '@/components/Heading.vue';
 import HelperText from '@/components/HelperText.vue';
 import LinkText from '@/components/LinkText.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import { Head, useForm } from '@inertiajs/vue3';
+import Heading from '@/components/Heading.vue';
 
 const form = useForm({
     email: '',
@@ -28,7 +28,7 @@ const submit = () => {
     <div class="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8 dark:bg-background-dark">
         <div class="w-full max-w-md space-y-8">
             <div>
-                <Heading class="text-center">Sign in to your account</Heading>
+                <Heading variant="lg" class="text-center">Sign in to your account</Heading>
                 <HelperText class="mt-2 text-center">
                     Or
                     <LinkText :href="route('register')"> create a new account </LinkText>

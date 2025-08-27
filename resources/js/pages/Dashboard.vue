@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import BodyText from '@/components/BodyText.vue';
+import Card from '@/components/Card.vue';
+import HelperText from '@/components/HelperText.vue';
+import LinkText from '@/components/LinkText.vue';
+import PrimaryButton from '@/components/PrimaryButton.vue';
+import PrimaryButtonLink from '@/components/PrimaryButtonLink.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { ChartNoAxesColumn, Eye, Paintbrush, Plus, ScrollText } from 'lucide-vue-next';
+import Heading from '@/components/Heading.vue';
 
 interface Worklog {
     id: number;
@@ -67,194 +75,117 @@ const logout = () => {
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <!-- Welcome Section -->
                 <div class="mb-8">
-                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h2>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage your daily work logs and track your productivity.</p>
+                    <Heading variant="md">Dashboard</Heading>
+                    <HelperText class="mt-1">Manage your daily work logs and track your productivity.</HelperText>
                 </div>
 
                 <!-- Quick Actions -->
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <!-- Add New Log Card -->
-                    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                        <div class="p-6">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <svg
-                                        class="h-6 w-6 text-indigo-600 dark:text-indigo-400"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                    >
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Add New Log</h3>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Create a new daily work log entry</p>
-                                </div>
+                    <Card class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <Plus class="text-primary-600 dark:text-indigo-400" />
                             </div>
-                            <div class="mt-4">
-                                <Link
-                                    :href="route('worklogs.create')"
-                                    class="block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
-                                >
-                                    Create Log
-                                </Link>
+                            <div class="ml-3">
+                                <Heading variant="sm">Add New Log</Heading>
+                                <HelperText>Create a new daily work log entry</HelperText>
                             </div>
                         </div>
-                    </div>
+                        <div class="mt-4">
+                            <PrimaryButtonLink :href="route('worklogs.create')" class="block w-full"> Create Log </PrimaryButtonLink>
+                        </div>
+                    </Card>
 
                     <!-- View Logs Card -->
-                    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                        <div class="p-6">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <svg
-                                        class="h-6 w-6 text-green-600 dark:text-green-400"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-4.5B4.875 8.25 2.25 10.875 2.25 14.25v2.625c0 .621.504 1.125 1.125 1.125h15.75c.621 0 1.125-.504 1.125-1.125Z"
-                                        />
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">View Logs</h3>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Browse and filter your work logs</p>
-                                </div>
+                    <Card class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <Eye class="text-success-600 dark:text-success-400" />
                             </div>
-                            <div class="mt-4">
-                                <Link
-                                    :href="route('worklogs.index')"
-                                    class="block w-full rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-500 dark:bg-green-500 dark:hover:bg-green-400"
-                                >
-                                    View All Logs
-                                </Link>
+                            <div class="ml-3">
+                                <Heading variant="sm">View Logs</Heading>
+                                <HelperText>Browse and filter your work logs</HelperText>
                             </div>
                         </div>
-                    </div>
+                        <div class="mt-4">
+                            <Link
+                                :href="route('worklogs.index')"
+                                class="block w-full rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-green-500 dark:bg-green-500 dark:hover:bg-green-400"
+                            >
+                                View All Logs
+                            </Link>
+                        </div>
+                    </Card>
 
                     <!-- Analytics Card -->
-                    <div class="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                        <div class="p-6">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <svg
-                                        class="h-6 w-6 text-purple-600 dark:text-purple-400"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke-width="1.5"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"
-                                        />
-                                    </svg>
-                                </div>
-                                <div class="ml-3">
-                                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Analytics</h3>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">View productivity insights</p>
-                                </div>
+                    <Card class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <ChartNoAxesColumn class="text-purple-600 dark:text-purple-400" />
                             </div>
-                            <div class="mt-4">
-                                <button
-                                    class="w-full rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white hover:bg-purple-500 dark:bg-purple-500 dark:hover:bg-purple-400"
-                                >
-                                    View Analytics
-                                </button>
+                            <div class="ml-3">
+                                <Heading variant="sm">Analytics</Heading>
+                                <HelperText>View productivity insights</HelperText>
                             </div>
                         </div>
-                    </div>
+                        <div class="mt-4">
+                            <PrimaryButton class="w-full bg-purple-600 dark:bg-purple-400"> View Analytics </PrimaryButton>
+                        </div>
+                    </Card>
                 </div>
 
                 <!-- Recent Activity -->
-                <div class="mt-8">
-                    <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                        <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Activity</h3>
-                        </div>
-                        <div class="p-6">
-                            <div v-if="recentWorklogs && recentWorklogs.length > 0" class="space-y-4">
-                                <div
-                                    v-for="worklog in recentWorklogs"
-                                    :key="worklog.id"
-                                    class="flex items-start gap-3 rounded-lg border border-gray-100 p-4 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
-                                >
-                                    <div class="flex-shrink-0">
-                                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900">
-                                            <svg
-                                                class="h-4 w-4 text-indigo-600 dark:text-indigo-400"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="1.5"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    d="M9 12h3.75M9 15h3.75M9 18h3.75m3-7.036A11.959 11.959 0 0 1 3.75 12c0-6.627 5.373-12 12-12s12 5.373 12 12c0 2.128-.55 4.172-1.536 5.964-2.268 4.134-6.697 6.6-11.464 6.6-1.223 0-2.407-.218-3.536-.64"
-                                                />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <div class="flex items-center justify-between">
-                                            <Link
-                                                :href="route('worklogs.show', worklog.id)"
-                                                class="text-sm font-medium text-gray-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400"
-                                            >
-                                                {{ worklog.title }}
-                                            </Link>
-                                            <span class="text-xs text-gray-500 dark:text-gray-400">
-                                                {{ new Date(worklog.log_date).toLocaleDateString() }}
-                                            </span>
-                                        </div>
-                                        <p class="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
-                                            {{ worklog.content.substring(0, 100) }}{{ worklog.content.length > 100 ? '...' : '' }}
-                                        </p>
+                <Card class="mt-8">
+                    <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+                        <Heading variant="sm">Recent Activity</Heading>
+                    </div>
+                    <div class="p-6">
+                        <div v-if="recentWorklogs && recentWorklogs.length > 0" class="space-y-4">
+                            <div
+                                v-for="worklog in recentWorklogs"
+                                :key="worklog.id"
+                                class="flex items-start gap-3 rounded-lg border border-gray-100 p-4 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
+                            >
+                                <div class="flex-shrink-0">
+                                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900">
+                                        <ScrollText class="text-primary-600 dark:text-primary-400" :size="18" />
                                     </div>
                                 </div>
-                                <div class="mt-4 text-center">
-                                    <Link
-                                        :href="route('worklogs.index')"
-                                        class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-                                    >
-                                        View all work logs →
-                                    </Link>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <Link
+                                            :href="route('worklogs.show', worklog.id)"
+                                            class="text-sm font-medium text-text-primary hover:text-primary-600 dark:text-text-primary-dark dark:hover:text-primary-400"
+                                        >
+                                            {{ worklog.title }}
+                                        </Link>
+                                        <HelperText class="text-xs">
+                                            {{ new Date(worklog.log_date).toLocaleDateString() }}
+                                        </HelperText>
+                                    </div>
+                                    <HelperText class="mt-1 line-clamp-2">
+                                        {{ worklog.content.substring(0, 100) }}{{ worklog.content.length > 100 ? '...' : '' }}
+                                    </HelperText>
                                 </div>
                             </div>
-                            <div v-else class="py-8 text-center">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-4.5B4.875 8.25 2.25 10.875 2.25 14.25v2.625c0 .621.504 1.125 1.125 1.125h15.75c.621 0 1.125-.504 1.125-1.125Z"
-                                    />
-                                </svg>
-                                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No work logs</h3>
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating your first work log entry.</p>
-                                <div class="mt-6">
-                                    <Link
-                                        :href="route('worklogs.create')"
-                                        class="inline-flex items-center gap-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
-                                    >
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                        Create your first log
-                                    </Link>
-                                </div>
+                            <div class="mt-4 text-center">
+                                <LinkText :href="route('worklogs.index')" class="text-sm"> View all work logs </LinkText>
+                            </div>
+                        </div>
+                        <div v-else class="flex flex-col items-center justify-center py-8 text-center">
+                            <Paintbrush class="text-primary-600 dark:text-primary-400" :size="40" />
+                            <BodyText class="mt-2">No work logs</BodyText>
+                            <HelperText class="mt-1">Get started by creating your first work log entry.</HelperText>
+                            <div class="mt-6">
+                                <PrimaryButtonLink :href="route('worklogs.create')" class="inline-flex items-center gap-2">
+                                    <Plus />
+                                    Create your first log
+                                </PrimaryButtonLink>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Card>
             </div>
         </main>
     </div>

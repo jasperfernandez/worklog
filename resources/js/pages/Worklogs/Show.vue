@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import PrimaryButtonLink from '@/components/PrimaryButtonLink.vue';
 
 interface WorklogFile {
     id: number;
@@ -259,15 +260,15 @@ const downloadFile = (fileId: number) => {
 
                 <!-- Quick Actions -->
                 <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-                    <Link
+                    <PrimaryButtonLink
                         :href="route('worklogs.create')"
-                        class="inline-flex items-center justify-center rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-500 dark:bg-green-500 dark:hover:bg-green-400"
+                        class="inline-flex items-center justify-center bg-green-600 hover:bg-green-500 dark:bg-green-500 dark:hover:bg-green-400"
                     >
                         <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
                         Create Another Log
-                    </Link>
+                    </PrimaryButtonLink>
 
                     <Link
                         :href="route('worklogs.index')"

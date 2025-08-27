@@ -29,11 +29,7 @@ const form = useForm({
 
 const submit = () => {
     form.files = selectedFiles.value;
-    form.post(route('worklogs.store'), {
-        onSuccess: () => {
-            // Redirect is handled by the controller
-        },
-    });
+    form.post(route('worklogs.store'));
 };
 
 const logout = () => {
@@ -134,7 +130,7 @@ onMounted(() => {
                             Back to Work Logs
                         </Link>
                     </div>
-                    <Heading class="text-2xl">Create New Work Log</Heading>
+                    <Heading variant="md">Create New Work Log</Heading>
                     <HelperText class="mt-1">Document your daily work activities and achievements</HelperText>
                 </div>
 
@@ -262,7 +258,7 @@ onMounted(() => {
                             </Link>
 
                             <PrimaryButton
-                                type="button"
+                                type="submit"
                                 :disabled="form.processing"
                                 :loading="form.processing"
                                 loading-text="Creating...">
