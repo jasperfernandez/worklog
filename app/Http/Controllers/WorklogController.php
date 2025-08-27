@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreWorklogRequest;
+use App\Http\Requests\UpdateWorklogRequest;
 use App\Models\Worklog;
+use App\Models\WorklogFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -15,30 +21,26 @@ class WorklogController extends Controller
      */
     public function index(Request $request): Response
     {
-        $query = $request->user()->worklogs()->with('files');
+        $worklogs = $request->user()->worklogs()
+            ->with('files')
+            ->when($request->filled('from_date'), function ($query) use ($request) {
+                return $query->whereDate('log_date', '>=', $request->from_date);
+            })
+            ->when($request->filled('to_date'), function ($query) use ($request) {
+                return $query->whereDate('log_date', '<=', $request->to_date);
+            })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
 
-        // Filter by date range
-        if ($request->filled('from_date')) {
-            $query->whereDate('log_date', '>=', $request->from_date);
-        }
-
-        if ($request->filled('to_date')) {
-            $query->whereDate('log_date', '<=', $request->to_date);
-        }
-
-        // Search by title or content
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
-            });
-        }
-
-        $worklogs = $query->orderBy('log_date', 'desc')
-                         ->orderBy('created_at', 'desc')
-                         ->paginate(10)
-                         ->withQueryString();
+                return $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%{$search}%")
+                        ->orWhere('content', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('log_date', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('Worklogs/Index', [
             'worklogs' => $worklogs,
@@ -57,18 +59,36 @@ class WorklogController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(StoreWorklogRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'content' => ['required', 'string'],
-            'log_date' => ['required', 'date'],
+        $validated = $request->validated();
+
+        // Create the worklog
+        $worklog = $request->user()->worklogs()->create([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'log_date' => $validated['log_date'],
         ]);
 
-        $request->user()->worklogs()->create($validated);
+        // Handle file uploads if any
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $filePath = $file->storeAs('worklog-files', $filename, 'local');
+
+                WorklogFile::create([
+                    'filename' => $filename,
+                    'original_name' => $file->getClientOriginalName(),
+                    'file_path' => $filePath,
+                    'file_size' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                    'worklog_id' => $worklog->id,
+                ]);
+            }
+        }
 
         return redirect()->route('worklogs.index')
-                        ->with('success', 'Worklog created successfully!');
+            ->with('success', 'Worklog created successfully!');
     }
 
     /**
@@ -76,7 +96,7 @@ class WorklogController extends Controller
      */
     public function show(Worklog $worklog): Response
     {
-        $this->authorize('view', $worklog);
+        Gate::authorize('view', $worklog);
 
         $worklog->load('files');
 
@@ -90,7 +110,7 @@ class WorklogController extends Controller
      */
     public function edit(Worklog $worklog): Response
     {
-        $this->authorize('update', $worklog);
+        Gate::authorize('update', $worklog);
 
         $worklog->load('files');
 
@@ -102,20 +122,52 @@ class WorklogController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Worklog $worklog): RedirectResponse
+    public function update(UpdateWorklogRequest $request, Worklog $worklog): RedirectResponse
     {
-        $this->authorize('update', $worklog);
+        Gate::authorize('update', $worklog);
 
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'content' => ['required', 'string'],
-            'log_date' => ['required', 'date'],
+        $validated = $request->validated();
+
+        // Update worklog basic info
+        $worklog->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'log_date' => $validated['log_date'],
         ]);
 
-        $worklog->update($validated);
+        // Handle file removals
+        if (isset($validated['remove_files']) && is_array($validated['remove_files'])) {
+            $filesToRemove = WorklogFile::whereIn('id', $validated['remove_files'])
+                ->where('worklog_id', $worklog->id)
+                ->get();
+
+            foreach ($filesToRemove as $file) {
+                // Delete from storage
+                Storage::disk('local')->delete($file->file_path);
+                // Delete from database
+                $file->delete();
+            }
+        }
+
+        // Handle new file uploads
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $filePath = $file->storeAs('worklog-files', $filename, 'local');
+
+                WorklogFile::create([
+                    'filename' => $filename,
+                    'original_name' => $file->getClientOriginalName(),
+                    'file_path' => $filePath,
+                    'file_size' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                    'worklog_id' => $worklog->id,
+                ]);
+            }
+        }
 
         return redirect()->route('worklogs.show', $worklog)
-                        ->with('success', 'Worklog updated successfully!');
+            ->with('success', 'Worklog updated successfully!');
     }
 
     /**
@@ -123,11 +175,33 @@ class WorklogController extends Controller
      */
     public function destroy(Worklog $worklog): RedirectResponse
     {
-        $this->authorize('delete', $worklog);
+        Gate::authorize('delete', $worklog);
+
+        // Delete associated files from storage
+        foreach ($worklog->files as $file) {
+            Storage::disk('local')->delete($file->file_path);
+        }
 
         $worklog->delete();
 
         return redirect()->route('worklogs.index')
-                        ->with('success', 'Worklog deleted successfully!');
+            ->with('success', 'Worklog deleted successfully!');
+    }
+
+    /**
+     * Download a worklog file.
+     */
+    public function downloadFile(WorklogFile $worklogFile): BinaryFileResponse
+    {
+        Gate::authorize('view', $worklogFile->worklog);
+
+        if (!Storage::disk('local')->exists($worklogFile->file_path)) {
+            abort(404, 'File not found.');
+        }
+
+        return response()->download(
+            Storage::disk('local')->path($worklogFile->file_path),
+            $worklogFile->original_name
+        );
     }
 }

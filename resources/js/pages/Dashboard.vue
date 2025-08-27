@@ -1,6 +1,20 @@
 <script setup lang="ts">
-import { Head, Link, router } from '@inertiajs/vue3';
-import { usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+
+interface Worklog {
+    id: number;
+    title: string;
+    content: string;
+    log_date: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface Props {
+    recentWorklogs?: Worklog[];
+}
+
+defineProps<Props>();
 
 const page = usePage();
 const user = page.props.auth?.user;
@@ -26,10 +40,10 @@ const logout = () => {
                             Worklog
                         </Link>
                         <nav class="hidden space-x-8 md:flex">
-                            <Link href="/dashboard" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
-                                Dashboard
+                            <Link href="/dashboard" class="font-medium text-indigo-600 dark:text-indigo-400"> Dashboard </Link>
+                            <Link href="/worklogs" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                                Work Logs
                             </Link>
-                            <Link href="/worklogs" class="font-medium text-indigo-600 dark:text-indigo-400"> Work Logs </Link>
                         </nav>
                     </div>
 
@@ -160,16 +174,84 @@ const logout = () => {
                     </div>
                 </div>
 
-                <!-- Recent Activity Placeholder -->
+                <!-- Recent Activity -->
                 <div class="mt-8">
                     <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
                         <div class="border-b border-gray-200 px-6 py-4 dark:border-gray-700">
                             <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Activity</h3>
                         </div>
                         <div class="p-6">
-                            <p class="py-8 text-center text-gray-600 dark:text-gray-400">
-                                No work logs found. Start by creating your first log entry!
-                            </p>
+                            <div v-if="recentWorklogs && recentWorklogs.length > 0" class="space-y-4">
+                                <div
+                                    v-for="worklog in recentWorklogs"
+                                    :key="worklog.id"
+                                    class="flex items-start gap-3 rounded-lg border border-gray-100 p-4 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
+                                >
+                                    <div class="flex-shrink-0">
+                                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 dark:bg-indigo-900">
+                                            <svg
+                                                class="h-4 w-4 text-indigo-600 dark:text-indigo-400"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke-width="1.5"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    d="M9 12h3.75M9 15h3.75M9 18h3.75m3-7.036A11.959 11.959 0 0 1 3.75 12c0-6.627 5.373-12 12-12s12 5.373 12 12c0 2.128-.55 4.172-1.536 5.964-2.268 4.134-6.697 6.6-11.464 6.6-1.223 0-2.407-.218-3.536-.64"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <Link
+                                                :href="route('worklogs.show', worklog.id)"
+                                                class="text-sm font-medium text-gray-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400"
+                                            >
+                                                {{ worklog.title }}
+                                            </Link>
+                                            <span class="text-xs text-gray-500 dark:text-gray-400">
+                                                {{ new Date(worklog.log_date).toLocaleDateString() }}
+                                            </span>
+                                        </div>
+                                        <p class="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
+                                            {{ worklog.content.substring(0, 100) }}{{ worklog.content.length > 100 ? '...' : '' }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="mt-4 text-center">
+                                    <Link
+                                        :href="route('worklogs.index')"
+                                        class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+                                    >
+                                        View all work logs →
+                                    </Link>
+                                </div>
+                            </div>
+                            <div v-else class="py-8 text-center">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-4.5B4.875 8.25 2.25 10.875 2.25 14.25v2.625c0 .621.504 1.125 1.125 1.125h15.75c.621 0 1.125-.504 1.125-1.125Z"
+                                    />
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No work logs</h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating your first work log entry.</p>
+                                <div class="mt-6">
+                                    <Link
+                                        :href="route('worklogs.create')"
+                                        class="inline-flex items-center gap-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>
+                                        Create your first log
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

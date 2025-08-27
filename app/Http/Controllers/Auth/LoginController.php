@@ -7,7 +7,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class LoginController extends Controller
@@ -15,9 +14,9 @@ class LoginController extends Controller
     /**
      * Show the login form.
      */
-    public function show(): Response
+    public function create(): Response
     {
-        return Inertia::render('Auth/Login');
+        return inertia('Auth/Login');
     }
 
     /**
@@ -51,6 +50,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return to_route('login');
     }
 }

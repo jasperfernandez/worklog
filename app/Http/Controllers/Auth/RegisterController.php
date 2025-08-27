@@ -10,7 +10,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-use Inertia\Inertia;
 use Inertia\Response;
 
 class RegisterController extends Controller
@@ -18,9 +17,9 @@ class RegisterController extends Controller
     /**
      * Show the registration form.
      */
-    public function show(): Response
+    public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return inertia('Auth/Register');
     }
 
     /**
@@ -44,6 +43,6 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return to_route('dashboard');
     }
 }
