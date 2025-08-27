@@ -18,7 +18,7 @@ describe('Worklog Index', function () {
         $response->assertSuccessful();
         $response->assertInertia(
             fn ($page) => $page
-                ->component('Worklogs/Index')
+                ->component('worklogs/Index')
                 ->has('worklogs.data', 3)
         );
     });
@@ -45,7 +45,7 @@ describe('Worklog Index', function () {
         $response->assertSuccessful();
         $response->assertInertia(
             fn ($page) => $page
-                ->component('Worklogs/Index')
+                ->component('worklogs/Index')
                 ->has('worklogs.data', 2)
         );
     });
@@ -69,7 +69,7 @@ describe('Worklog Index', function () {
         $response->assertSuccessful();
         $response->assertInertia(
             fn ($page) => $page
-                ->component('Worklogs/Index')
+                ->component('worklogs/Index')
                 ->has('worklogs.data', 1)
                 ->where('worklogs.data.0.title', 'Laravel Development')
         );
@@ -87,7 +87,7 @@ describe('Worklog Creation', function () {
         $response = $this->actingAs($this->user)->get(route('worklogs.create'));
 
         $response->assertSuccessful();
-        $response->assertInertia(fn ($page) => $page->component('Worklogs/Create'));
+        $response->assertInertia(fn ($page) => $page->component('worklogs/Create'));
     });
 
     it('creates a new worklog with valid data', function () {
@@ -152,7 +152,7 @@ describe('Worklog Display', function () {
         $response->assertSuccessful();
         $response->assertInertia(
             fn ($page) => $page
-                ->component('Worklogs/Show')
+                ->component('worklogs/Show')
                 ->where('worklog.id', $worklog->id)
                 ->has('worklog.files', 2)
         );
@@ -185,7 +185,7 @@ describe('Worklog Editing', function () {
         $response->assertSuccessful();
         $response->assertInertia(
             fn ($page) => $page
-                ->component('Worklogs/Edit')
+                ->component('worklogs/Edit')
                 ->where('worklog.id', $worklog->id)
         );
     });

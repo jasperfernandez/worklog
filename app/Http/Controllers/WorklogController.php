@@ -42,7 +42,7 @@ class WorklogController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return Inertia::render('Worklogs/Index', [
+        return Inertia::render('worklogs/Index', [
             'worklogs' => $worklogs,
             'filters' => $request->only(['search', 'from_date', 'to_date']),
         ]);
@@ -53,7 +53,7 @@ class WorklogController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Worklogs/Create');
+        return Inertia::render('worklogs/Create');
     }
 
     /**
@@ -100,7 +100,7 @@ class WorklogController extends Controller
 
         $worklog->load('files');
 
-        return Inertia::render('Worklogs/Show', [
+        return Inertia::render('worklogs/Show', [
             'worklog' => $worklog,
         ]);
     }
@@ -114,7 +114,7 @@ class WorklogController extends Controller
 
         $worklog->load('files');
 
-        return Inertia::render('Worklogs/Edit', [
+        return Inertia::render('worklogs/Edit', [
             'worklog' => $worklog,
         ]);
     }

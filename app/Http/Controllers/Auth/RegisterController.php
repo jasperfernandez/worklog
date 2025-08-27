@@ -19,7 +19,7 @@ class RegisterController extends Controller
      */
     public function create(): Response
     {
-        return inertia('Auth/Register');
+        return inertia('auth/Register');
     }
 
     /**
