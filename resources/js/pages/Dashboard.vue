@@ -6,7 +6,7 @@ import LinkText from '@/components/LinkText.vue';
 import PrimaryButton from '@/components/PrimaryButton.vue';
 import PrimaryButtonLink from '@/components/PrimaryButtonLink.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { ChartNoAxesColumn, Eye, Paintbrush, Plus, ScrollText } from 'lucide-vue-next';
+import { ChartNoAxesColumn, Eye, FileText, Plus, ScrollText } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
 
 interface Worklog {
@@ -174,7 +174,7 @@ const logout = () => {
                             </div>
                         </div>
                         <div v-else class="flex flex-col items-center justify-center py-8 text-center">
-                            <Paintbrush class="text-primary-600 dark:text-primary-400" :size="40" />
+                            <FileText class="text-secondary-600 dark:text-secondary-400" :size="40" />
                             <BodyText class="mt-2">No work logs</BodyText>
                             <HelperText class="mt-1">Get started by creating your first work log entry.</HelperText>
                             <div class="mt-6">

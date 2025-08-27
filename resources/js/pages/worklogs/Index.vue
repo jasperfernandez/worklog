@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import BodyText from '@/components/BodyText.vue';
+import FormInput from '@/components/FormInput.vue';
+import Heading from '@/components/Heading.vue';
+import HelperText from '@/components/HelperText.vue';
+import PrimaryButtonLink from '@/components/PrimaryButtonLink.vue';
+import SecondaryButton from '@/components/SecondaryButton.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { FileText, Plus } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 
 interface WorklogFile {
@@ -127,12 +134,7 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                         <span class="text-sm text-gray-700 dark:text-gray-300">
                             {{ user?.name }}
                         </span>
-                        <button
-                            @click="logout"
-                            class="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600"
-                        >
-                            Logout
-                        </button>
+                        <SecondaryButton @click="logout"> Logout </SecondaryButton>
                     </div>
                 </div>
             </div>
@@ -144,90 +146,45 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                 <!-- Header -->
                 <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Work Logs</h1>
-                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Track your daily work activities and achievements</p>
+                        <Heading variant="md">Work Logs</Heading>
+                        <HelperText class="mt-1">Track your daily work activities and achievements</HelperText>
                     </div>
                     <div class="mt-4 sm:mt-0">
-                        <Link
-                            :href="route('worklogs.create')"
-                            class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
-                        >
-                            <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
+                        <PrimaryButtonLink :href="route('worklogs.create')" class="inline-flex items-center">
+                            <Plus class="mr-2" :size="16" />
                             Add New Log
-                        </Link>
+                        </PrimaryButtonLink>
                     </div>
                 </div>
 
                 <!-- Filters -->
                 <div class="mb-6 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <div class="p-6">
-                        <h3 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Filters</h3>
+                        <Heading variant="sm" class="mb-4">Filters</Heading>
                         <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
                             <div class="md:col-span-2">
-                                <label for="search" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"> Search </label>
-                                <input
-                                    id="search"
-                                    v-model="search"
-                                    type="text"
-                                    placeholder="Search by title or content..."
-                                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                                />
+                                <FormInput id="search" v-model="search" label="Search" name="search" placeholder="Search by title or content..." />
                             </div>
-                            <div>
-                                <label for="from_date" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"> From Date </label>
-                                <input
-                                    id="from_date"
-                                    v-model="fromDate"
-                                    type="date"
-                                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                />
-                            </div>
-                            <div>
-                                <label for="to_date" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300"> To Date </label>
-                                <input
-                                    id="to_date"
-                                    v-model="toDate"
-                                    type="date"
-                                    class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                                />
-                            </div>
+                            <FormInput id="from_date" label="From Date" v-model="fromDate" type="date" />
+                            <FormInput id="to_date" label="To Date" v-model="toDate" type="date" />
                         </div>
                         <div class="mt-4 flex justify-end">
-                            <button
-                                @click="clearFilters"
-                                class="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white hover:bg-gray-500 dark:bg-gray-700 dark:hover:bg-gray-600"
-                            >
-                                Clear Filters
-                            </button>
+                            <SecondaryButton @click="clearFilters"> Clear Filters </SecondaryButton>
                         </div>
                     </div>
                 </div>
 
                 <!-- Work Logs List -->
                 <div class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                    <div v-if="worklogs.data.length === 0" class="py-12 text-center">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="1"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                        </svg>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No work logs</h3>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating your first work log.</p>
+                    <div v-if="worklogs.data.length === 0" class="flex flex-col items-center justify-center py-12 text-center">
+                        <FileText class="text-secondary-600 dark:text-secondary-400" :size="40" />
+                        <BodyText class="mt-2">No work logs</BodyText>
+                        <HelperText class="mt-1">Get started by creating your first work log.</HelperText>
                         <div class="mt-6">
-                            <Link
-                                :href="route('worklogs.create')"
-                                class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
-                            >
-                                <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                Add Work Log
-                            </Link>
+                            <PrimaryButtonLink :href="route('worklogs.create')" class="inline-flex items-center">
+                                <Plus class="mr-2" :size="16" />
+                                Add New Log
+                            </PrimaryButtonLink>
                         </div>
                     </div>
 
@@ -236,11 +193,11 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="mb-2 flex items-center space-x-2">
-                                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                        <Heading variant="sm">
                                             <Link :href="route('worklogs.show', worklog.id)" class="hover:text-indigo-600 dark:hover:text-indigo-400">
                                                 {{ worklog.title }}
                                             </Link>
-                                        </h3>
+                                        </Heading>
                                         <span
                                             v-if="worklog.files.length > 0"
                                             class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
@@ -254,9 +211,9 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                                     </p>
 
                                     <div class="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                                        <span>{{ formatDate(worklog.log_date) }}</span>
+                                        <HelperText>{{ formatDate(worklog.log_date) }}</HelperText>
                                         <span>•</span>
-                                        <span>Created {{ formatDate(worklog.created_at) }}</span>
+                                        <HelperText>Created {{ formatDate(worklog.created_at) }}</HelperText>
                                     </div>
                                 </div>
 
