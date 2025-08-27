@@ -29,7 +29,7 @@ const submit = () => {
         <div class="w-full max-w-md space-y-8">
             <div>
                 <Heading class="text-center"> Create your account </Heading>
-                <HelperText class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                <HelperText class="mt-2 text-center">
                     Or
                     <LinkText :href="route('login')"> sign in to your existing account </LinkText>
                 </HelperText>
