@@ -3,8 +3,8 @@ import BodyText from '@/components/BodyText.vue';
 import Card from '@/components/Card.vue';
 import HelperText from '@/components/HelperText.vue';
 import LinkText from '@/components/LinkText.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
-import PrimaryButtonLink from '@/components/PrimaryButtonLink.vue';
+import Button from '@/components/Button.vue';
+import ButtonLink from '@/components/ButtonLink.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { ChartNoAxesColumn, Eye, FileText, Plus, ScrollText } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
@@ -93,7 +93,7 @@ const logout = () => {
                             </div>
                         </div>
                         <div class="mt-4">
-                            <PrimaryButtonLink :href="route('worklogs.create')" class="block w-full"> Create Log </PrimaryButtonLink>
+                            <ButtonLink :href="route('worklogs.create')" class="block w-full"> Create Log </ButtonLink>
                         </div>
                     </Card>
 
@@ -109,12 +109,12 @@ const logout = () => {
                             </div>
                         </div>
                         <div class="mt-4">
-                            <PrimaryButtonLink
+                            <ButtonLink
                                 :href="route('worklogs.index')"
                                 class="block w-full bg-success-600 hover:bg-success-500 dark:bg-success-500 dark:hover:bg-success-400"
                             >
                                 View All Logs
-                            </PrimaryButtonLink>
+                            </ButtonLink>
                         </div>
                     </Card>
 
@@ -130,7 +130,7 @@ const logout = () => {
                             </div>
                         </div>
                         <div class="mt-4">
-                            <PrimaryButton class="w-full bg-purple-600 hover:bg-purple-500 dark:bg-purple-500 dark:hover:bg-purple-400"> View Analytics </PrimaryButton>
+                            <Button class="w-full bg-purple-600 hover:bg-purple-500 dark:bg-purple-500 dark:hover:bg-purple-400"> View Analytics </Button>
                         </div>
                     </Card>
                 </div>
@@ -178,10 +178,10 @@ const logout = () => {
                             <BodyText class="mt-2">No work logs</BodyText>
                             <HelperText class="mt-1">Get started by creating your first work log entry.</HelperText>
                             <div class="mt-6">
-                                <PrimaryButtonLink :href="route('worklogs.create')" class="inline-flex items-center gap-2">
+                                <ButtonLink :href="route('worklogs.create')" class="inline-flex items-center gap-2">
                                     <Plus />
                                     Create your first log
-                                </PrimaryButtonLink>
+                                </ButtonLink>
                             </div>
                         </div>
                     </div>

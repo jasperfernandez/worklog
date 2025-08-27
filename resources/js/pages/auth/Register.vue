@@ -3,7 +3,7 @@ import FormInput from '@/components/FormInput.vue';
 import Heading from '@/components/Heading.vue';
 import HelperText from '@/components/HelperText.vue';
 import LinkText from '@/components/LinkText.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
+import Button from '@/components/Button.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -86,9 +86,9 @@ const submit = () => {
                 </div>
 
                 <div>
-                    <PrimaryButton class="w-full" type="submit" :disabled="form.processing" :loading="form.processing" loading-text="Creating account...">
+                    <Button class="w-full" type="submit" :disabled="form.processing" :loading="form.processing" loading-text="Creating account...">
                         Create account
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </form>
         </div>

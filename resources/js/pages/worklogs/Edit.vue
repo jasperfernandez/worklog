@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
+import { ChevronLeft, Save } from 'lucide-vue-next';
+import Heading from '@/components/Heading.vue';
+import HelperText from '@/components/HelperText.vue';
+import FormInput from '@/components/FormInput.vue';
+import ButtonLink from '@/components/ButtonLink.vue';
+import Button from '@/components/Button.vue';
 
 interface WorklogFile {
     id: number;
@@ -121,61 +127,47 @@ onMounted(() => {
                 <div class="mb-8">
                     <div class="mb-4 flex items-center space-x-4">
                         <Link
-                            :href="route('worklogs.show', worklog.id)"
-                            class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                            :href="route('worklogs.index')"
+                            class="inline-flex gap-1 items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                         >
-                            <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Back to Work Log
+                            <ChevronLeft :size="16" />
+                            Back to Work Logs
                         </Link>
                     </div>
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Edit Work Log</h1>
-                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Update your work log details and content</p>
+                    <Heading variant="md">Edit Work Log</Heading>
+                    <HelperText class="mt-1">Update your work log details and content</HelperText>
                 </div>
 
                 <!-- Form -->
                 <div class="mb-6 rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
                     <form @submit.prevent="submit" class="space-y-6 p-6">
                         <!-- Title -->
-                        <div>
-                            <label for="title" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Title <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                id="title"
-                                v-model="form.title"
-                                type="text"
-                                required
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-                                placeholder="Enter a descriptive title for your work log"
-                            />
-                            <div v-if="form.errors.title" class="mt-1 text-sm text-red-600 dark:text-red-400">
-                                {{ form.errors.title }}
-                            </div>
-                        </div>
+                        <FormInput
+                            id="title"
+                            label="Title"
+                            v-model="form.title"
+                            type="text"
+                            required
+                            placeholder="Enter a descriptive title for your work log"
+                            :error="form.errors.title"
+                            showRequiredAsterisk
+                        />
 
                         <!-- Log Date -->
-                        <div>
-                            <label for="log_date" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Log Date <span class="text-red-500">*</span>
-                            </label>
-                            <input
-                                id="log_date"
-                                v-model="form.log_date"
-                                type="date"
-                                required
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                            />
-                            <div v-if="form.errors.log_date" class="mt-1 text-sm text-red-600 dark:text-red-400">
-                                {{ form.errors.log_date }}
-                            </div>
-                        </div>
+                        <FormInput
+                            id="log_date"
+                            label="Log Date"
+                            v-model="form.log_date"
+                            type="date"
+                            required
+                            :error="form.errors.log_date"
+                            showRequiredAsterisk
+                        />
 
                         <!-- Content -->
                         <div>
                             <label for="content" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                Content <span class="text-red-500">*</span>
+                                Content <span class="text-danger-600 dark:text-danger-400">*</span>
                             </label>
                             <textarea
                                 id="content"
@@ -195,29 +187,23 @@ onMounted(() => {
 
                         <!-- Form Actions -->
                         <div class="flex items-center justify-between border-t border-gray-200 pt-6 dark:border-gray-700">
-                            <Link
+                            <ButtonLink
                                 :href="route('worklogs.show', worklog.id)"
-                                class="rounded-md bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
+                                variant="secondary"
                             >
                                 Cancel
-                            </Link>
+                            </ButtonLink>
 
-                            <button
+                            <Button
                                 type="submit"
                                 :disabled="form.processing"
-                                class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-indigo-500 dark:hover:bg-indigo-400"
+                                :loading="form.processing"
+                                loading-text="Saving..."
+
+
                             >
-                                <svg v-if="form.processing" class="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path
-                                        class="opacity-75"
-                                        fill="currentColor"
-                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                </svg>
-                                <span v-if="form.processing">Saving...</span>
-                                <span v-else>Save Changes</span>
-                            </button>
+                                <Save :size="16" class="mr-2 inline-flex items-center" />
+                                Save Changes</Button>
                         </div>
                     </form>
                 </div>

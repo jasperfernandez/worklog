@@ -3,7 +3,7 @@ import Checkbox from '@/components/Checkbox.vue';
 import FormInput from '@/components/FormInput.vue';
 import HelperText from '@/components/HelperText.vue';
 import LinkText from '@/components/LinkText.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
+import Button from '@/components/Button.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import Heading from '@/components/Heading.vue';
 
@@ -65,9 +65,9 @@ const submit = () => {
                 <div class="space-y-4">
                     <Checkbox v-model="form.remember" id="remember" name="remember" label="Remember me" />
 
-                    <PrimaryButton class="w-full" type="submit" :disabled="form.processing" :loading="form.processing" loading-text="Signing in...">
+                    <Button class="w-full" type="submit" :disabled="form.processing" :loading="form.processing" loading-text="Signing in...">
                         Sign in
-                    </PrimaryButton>
+                    </Button>
                 </div>
             </form>
         </div>

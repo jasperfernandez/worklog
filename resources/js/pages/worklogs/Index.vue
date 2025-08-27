@@ -3,11 +3,11 @@ import BodyText from '@/components/BodyText.vue';
 import FormInput from '@/components/FormInput.vue';
 import Heading from '@/components/Heading.vue';
 import HelperText from '@/components/HelperText.vue';
-import PrimaryButtonLink from '@/components/PrimaryButtonLink.vue';
-import SecondaryButton from '@/components/SecondaryButton.vue';
+import ButtonLink from '@/components/ButtonLink.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { FileText, Plus } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
+import Button from '@/components/Button.vue';
 
 interface WorklogFile {
     id: number;
@@ -134,7 +134,7 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                         <span class="text-sm text-gray-700 dark:text-gray-300">
                             {{ user?.name }}
                         </span>
-                        <SecondaryButton @click="logout"> Logout </SecondaryButton>
+                        <Button variant="secondary" @click="logout"> Logout </Button>
                     </div>
                 </div>
             </div>
@@ -150,10 +150,10 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                         <HelperText class="mt-1">Track your daily work activities and achievements</HelperText>
                     </div>
                     <div class="mt-4 sm:mt-0">
-                        <PrimaryButtonLink :href="route('worklogs.create')" class="inline-flex items-center">
+                        <ButtonLink :href="route('worklogs.create')" class="inline-flex items-center">
                             <Plus class="mr-2" :size="16" />
                             Add New Log
-                        </PrimaryButtonLink>
+                        </ButtonLink>
                     </div>
                 </div>
 
@@ -169,7 +169,7 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                             <FormInput id="to_date" label="To Date" v-model="toDate" type="date" />
                         </div>
                         <div class="mt-4 flex justify-end">
-                            <SecondaryButton @click="clearFilters"> Clear Filters </SecondaryButton>
+                            <Button variant="secondary" @click="clearFilters"> Clear Filters </Button>
                         </div>
                     </div>
                 </div>
@@ -181,10 +181,10 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                         <BodyText class="mt-2">No work logs</BodyText>
                         <HelperText class="mt-1">Get started by creating your first work log.</HelperText>
                         <div class="mt-6">
-                            <PrimaryButtonLink :href="route('worklogs.create')" class="inline-flex items-center">
+                            <ButtonLink :href="route('worklogs.create')" class="inline-flex items-center">
                                 <Plus class="mr-2" :size="16" />
                                 Add New Log
-                            </PrimaryButtonLink>
+                            </ButtonLink>
                         </div>
                     </div>
 

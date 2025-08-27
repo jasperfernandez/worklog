@@ -3,7 +3,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 import FormInput from '@/components/FormInput.vue';
 import HelperText from '@/components/HelperText.vue';
-import PrimaryButton from '@/components/PrimaryButton.vue';
+import Button from '@/components/Button.vue';
 import { ChevronLeft, X, File, Paperclip } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
 
@@ -257,13 +257,13 @@ onMounted(() => {
                                 Cancel
                             </Link>
 
-                            <PrimaryButton
+                            <Button
                                 type="submit"
                                 :disabled="form.processing"
                                 :loading="form.processing"
                                 loading-text="Creating...">
                                 Create Work Log
-                            </PrimaryButton>
+                            </Button>
                         </div>
                     </form>
                 </div>
