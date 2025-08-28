@@ -20,3 +20,23 @@ export interface User {
     created_at: string;
     updated_at: string;
 }
+
+export interface Worklog {
+    id: number;
+    title: string;
+    content: string;
+    log_date: string;
+    created_at: string;
+    updated_at: string;
+
+    files: WorklogFile[];
+}
+
+export interface WorklogFile {
+    id: number;
+    filename: string;
+    original_name: string;
+    file_size: number;
+    mime_type: string;
+    human_file_size: string;
+}
