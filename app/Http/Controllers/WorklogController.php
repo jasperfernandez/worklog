@@ -8,11 +8,11 @@ use App\Models\Worklog;
 use App\Models\WorklogFile;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class WorklogController extends Controller
 {
@@ -73,7 +73,7 @@ class WorklogController extends Controller
         // Handle file uploads if any
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
-                $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $filename = uniqid().'_'.time().'.'.$file->getClientOriginalExtension();
                 $filePath = $file->storeAs('worklog-files', $filename, 'local');
 
                 WorklogFile::create([
@@ -87,8 +87,8 @@ class WorklogController extends Controller
             }
         }
 
-        return redirect()->route('worklogs.index')
-            ->with('success', 'Worklog created successfully!');
+        return to_route('worklogs.index')
+            ->with('success', 'Worklog created.');
     }
 
     /**
@@ -100,7 +100,7 @@ class WorklogController extends Controller
 
         $worklog->load('files');
 
-        return Inertia::render('worklogs/Show', [
+        return inertia('worklogs/Show', [
             'worklog' => $worklog,
         ]);
     }
@@ -114,7 +114,7 @@ class WorklogController extends Controller
 
         $worklog->load('files');
 
-        return Inertia::render('worklogs/Edit', [
+        return inertia('worklogs/Edit', [
             'worklog' => $worklog,
         ]);
     }
@@ -143,7 +143,9 @@ class WorklogController extends Controller
 
             foreach ($filesToRemove as $file) {
                 // Delete from storage
-                Storage::disk('local')->delete($file->file_path);
+                if (Storage::disk('local')->exists($file->file_path)) {
+                    Storage::disk('local')->delete($file->file_path);
+                }
                 // Delete from database
                 $file->delete();
             }
@@ -152,7 +154,7 @@ class WorklogController extends Controller
         // Handle new file uploads
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
-                $filename = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $filename = uniqid().'_'.time().'.'.$file->getClientOriginalExtension();
                 $filePath = $file->storeAs('worklog-files', $filename, 'local');
 
                 WorklogFile::create([
@@ -166,8 +168,8 @@ class WorklogController extends Controller
             }
         }
 
-        return redirect()->route('worklogs.show', $worklog)
-            ->with('success', 'Worklog updated successfully!');
+        return to_route('worklogs.show', $worklog)
+            ->with('success', 'Worklog updated.');
     }
 
     /**
@@ -179,13 +181,15 @@ class WorklogController extends Controller
 
         // Delete associated files from storage
         foreach ($worklog->files as $file) {
-            Storage::disk('local')->delete($file->file_path);
+            if (Storage::disk('local')->exists($file->file_path)) {
+                Storage::disk('local')->delete($file->file_path);
+            }
         }
 
         $worklog->delete();
 
-        return redirect()->route('worklogs.index')
-            ->with('success', 'Worklog deleted successfully!');
+        return to_route('worklogs.index')
+            ->with('success', 'Worklog deleted.');
     }
 
     /**
@@ -195,7 +199,7 @@ class WorklogController extends Controller
     {
         Gate::authorize('view', $worklogFile->worklog);
 
-        if (!Storage::disk('local')->exists($worklogFile->file_path)) {
+        if (! Storage::disk('local')->exists($worklogFile->file_path)) {
             abort(404, 'File not found.');
         }
 

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+import { cn } from '@/lib/utils';
+
 type ButtonVariant = 'primary' | 'secondary' | 'success' | 'danger'
 
 const props = defineProps<{
@@ -31,7 +33,7 @@ const baseClass = `rounded-lg px-3 py-2 text-sm font-semibold text-white focus-v
     <button
         :type="buttonType"
         :disabled="props.disabled || props.loading"
-        :class="baseClass"
+        :class="cn(baseClass, props.class)"
     >
         <span v-if="props.loading">{{ props.loadingText || 'Loading...' }}</span>
         <span v-else :class="props.class"><slot /></span>

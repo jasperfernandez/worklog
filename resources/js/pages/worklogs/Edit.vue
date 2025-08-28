@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { onMounted } from 'vue';
-import { ChevronLeft, Save } from 'lucide-vue-next';
+import Banner from '@/components/Banner.vue';
+import Button from '@/components/Button.vue';
+import ButtonLink from '@/components/ButtonLink.vue';
+import FormInput from '@/components/FormInput.vue';
 import Heading from '@/components/Heading.vue';
 import HelperText from '@/components/HelperText.vue';
-import FormInput from '@/components/FormInput.vue';
-import ButtonLink from '@/components/ButtonLink.vue';
-import Button from '@/components/Button.vue';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { ChevronLeft, Save, Trash } from 'lucide-vue-next';
+import { onMounted } from 'vue';
 
 interface WorklogFile {
     id: number;
@@ -38,7 +39,7 @@ const user = page.props.auth?.user;
 const form = useForm({
     title: props.worklog.title,
     content: props.worklog.content,
-    log_date: props.worklog.log_date,
+    log_date: props.worklog.log_date.split('T')[0], // Convert ISO date to YYYY-MM-DD
 });
 
 const submit = () => {
@@ -128,7 +129,7 @@ onMounted(() => {
                     <div class="mb-4 flex items-center space-x-4">
                         <Link
                             :href="route('worklogs.index')"
-                            class="inline-flex gap-1 items-center text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                            class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                         >
                             <ChevronLeft :size="16" />
                             Back to Work Logs
@@ -147,10 +148,10 @@ onMounted(() => {
                             label="Title"
                             v-model="form.title"
                             type="text"
-                            required
+                            requidanger
                             placeholder="Enter a descriptive title for your work log"
                             :error="form.errors.title"
-                            showRequiredAsterisk
+                            showRequidangerAsterisk
                         />
 
                         <!-- Log Date -->
@@ -161,7 +162,7 @@ onMounted(() => {
                             type="date"
                             required
                             :error="form.errors.log_date"
-                            showRequiredAsterisk
+                            showRequidangerAsterisk
                         />
 
                         <!-- Content -->
@@ -174,10 +175,10 @@ onMounted(() => {
                                 v-model="form.content"
                                 rows="8"
                                 required
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                                class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                 placeholder="Describe what you worked on today. Include tasks completed, challenges faced, achievements, and any other relevant details..."
                             />
-                            <div v-if="form.errors.content" class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            <div v-if="form.errors.content" class="mt-1 text-sm text-danger-600 dark:text-danger-400">
                                 {{ form.errors.content }}
                             </div>
                             <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
@@ -187,23 +188,12 @@ onMounted(() => {
 
                         <!-- Form Actions -->
                         <div class="flex items-center justify-between border-t border-gray-200 pt-6 dark:border-gray-700">
-                            <ButtonLink
-                                :href="route('worklogs.show', worklog.id)"
-                                variant="secondary"
-                            >
-                                Cancel
-                            </ButtonLink>
+                            <ButtonLink :href="route('worklogs.show', worklog.id)" variant="secondary"> Cancel </ButtonLink>
 
-                            <Button
-                                type="submit"
-                                :disabled="form.processing"
-                                :loading="form.processing"
-                                loading-text="Saving..."
-
-
-                            >
+                            <Button type="submit" :disabled="form.processing" :loading="form.processing" loading-text="Saving...">
                                 <Save :size="16" class="mr-2 inline-flex items-center" />
-                                Save Changes</Button>
+                                Save Changes
+                            </Button>
                         </div>
                     </form>
                 </div>
@@ -234,26 +224,17 @@ onMounted(() => {
                                     </p>
                                 </div>
                                 <div class="ml-2 flex-shrink-0">
-                                    <button class="text-red-600 hover:text-red-500 dark:text-red-400 dark:hover:text-red-300" title="Delete file">
-                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                stroke-width="2"
-                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                            />
-                                        </svg>
+                                    <button class="text-danger-600 hover:text-danger-500 dark:text-danger-400 dark:hover:text-danger-300" title="Delete file">
+                                        <Trash :size="16" />
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-                            <p class="text-sm text-blue-800 dark:text-blue-300">
-                                <strong>Note:</strong> File management functionality will be available once file upload is implemented. For now, you
-                                can view existing files but cannot add, remove, or replace them.
-                            </p>
-                        </div>
+                        <Banner variant="info" class="mt-4">
+                            <strong>Note:</strong> File management functionality will be available once file upload is implemented. For now, you can
+                            view existing files but cannot add, remove, or replace them.
+                        </Banner>
                     </div>
                 </div>
 
