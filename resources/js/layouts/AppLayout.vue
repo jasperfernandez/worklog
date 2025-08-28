@@ -30,8 +30,16 @@ const logout = () => {
                             Worklog
                         </Link>
                         <nav class="hidden space-x-8 md:flex">
-                            <Link :href="route('dashboard')" class="font-medium text-indigo-600 dark:text-indigo-400"> Dashboard </Link>
-                            <Link :href="route('worklogs.index')" class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white">
+                            <Link
+                                :href="route('dashboard')"
+                                :class="page.url === '/dashboard' ? 'font-medium text-indigo-600 dark:text-indigo-400' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+                            >
+                                Dashboard
+                            </Link>
+                            <Link
+                                :href="route('worklogs.index')"
+                                :class="page.url.startsWith('/worklogs') ? 'font-medium text-indigo-600 dark:text-indigo-400' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+                            >
                                 Work Logs
                             </Link>
                         </nav>
