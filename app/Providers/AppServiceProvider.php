@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configurePasswordValidation();
         $this->configureVite();
         $this->configureScheme();
-        $this->configureResources();
+        $this->configureResourceSerialization();
     }
 
     /**
@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
     private function configureCommands(): void
     {
         DB::prohibitDestructiveCommands(
-            app()->isProduction()
+            $this->app->isProduction()
         );
     }
 
@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
      */
     private function configureModels(): void
     {
-        Model::shouldBeStrict(!app()->isProduction());
+        Model::shouldBeStrict(!$this->app->isProduction());
         Model::automaticallyEagerLoadRelationships();
         Model::unguard();
     }
@@ -61,7 +61,7 @@ class AppServiceProvider extends ServiceProvider
      */
     private function configurePasswordValidation(): void
     {
-        Password::defaults(fn() => app()->isProduction() ? Password::min(8)->uncompromised() : null);
+        Password::defaults(fn() => $this->app->isProduction() ? Password::min(8)->uncompromised() : null);
     }
 
     /**
@@ -77,7 +77,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function configureVite(): void
     {
-        Vite::prefetch(concurrency: 3);
+        Vite::useAggressivePrefetching();
     }
 
     /**
@@ -85,15 +85,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function configureScheme(): void
     {
-        if (app()->isProduction()) {
+        if ($this->app->isProduction()) {
             URL::forceHttps();
         }
     }
 
     /**
-     * Configure resources.
+     * Configure resource serialization.
      */
-    private function configureResources(): void
+    private function configureResourceSerialization(): void
     {
         JsonResource::withoutWrapping();
     }
