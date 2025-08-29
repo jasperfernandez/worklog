@@ -31,11 +31,13 @@ class WorklogController extends Controller
                 return $query->whereDate('log_date', '<=', $request->to_date);
             })
             ->when($request->filled('search'), function ($query) use ($request) {
-                $search = $request->search;
+                $search = $request->query('search');
 
                 return $query->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('content', 'like', "%{$search}%");
+                    $q->whereAny([
+                        'title',
+                        'content'
+                    ], 'like', "%{$search}%");
                 });
             })
             ->orderBy('log_date', 'desc')
