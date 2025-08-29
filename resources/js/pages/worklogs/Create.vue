@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, useForm } from '@inertiajs/vue3';
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import FormInput from '@/components/FormInput.vue';
 import HelperText from '@/components/HelperText.vue';
 import Button from '@/components/Button.vue';
@@ -8,10 +8,22 @@ import { ChevronLeft, X, File, Paperclip } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { getTodayDate } from '@/lib/utils';
+import { useFileUpload } from '@/composables/useFileUpload';
 
-// File upload refs
-const fileInput = ref<HTMLInputElement | null>(null);
-const selectedFiles = ref<File[]>([]);
+// File upload composable
+const {
+    fileInput,
+    selectedFiles,
+    errors: fileErrors,
+    handleFileSelect,
+    removeFile,
+    formatFileSize,
+    triggerFileInput,
+    getAcceptAttribute,
+} = useFileUpload({
+    maxFiles: 2,
+    maxFileSize: 10 * 1024 * 1024, // 10MB
+});
 
 const form = useForm({
     title: '',
@@ -23,39 +35,6 @@ const form = useForm({
 const submit = () => {
     form.files = selectedFiles.value;
     form.post(route('worklogs.store'));
-};
-
-// File handling methods
-const handleFileSelect = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    if (target.files) {
-        const newFiles = Array.from(target.files);
-        selectedFiles.value = [...selectedFiles.value, ...newFiles];
-
-        // Reset the input to allow selecting the same file again if needed
-        target.value = '';
-    }
-};
-
-const removeFile = (index: number) => {
-    selectedFiles.value.splice(index, 1);
-};
-
-const formatFileSize = (bytes: number): string => {
-    const units = ['B', 'KB', 'MB', 'GB'];
-    let size = bytes;
-    let unitIndex = 0;
-
-    while (size >= 1024 && unitIndex < units.length - 1) {
-        size /= 1024;
-        unitIndex++;
-    }
-
-    return `${size.toFixed(1)} ${units[unitIndex]}`;
-};
-
-const triggerFileInput = () => {
-    fileInput.value?.click();
 };
 
 // Focus on title field when component mounts
@@ -142,7 +121,7 @@ onMounted(() => {
                             type="file"
                             multiple
                             class="hidden"
-                            accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp,.zip,.rar,.xlsx,.xls,.pptx,.ppt,.csv"
+                            :accept="getAcceptAttribute()"
                             @change="handleFileSelect"
                         />
 
@@ -155,6 +134,13 @@ onMounted(() => {
                             <Paperclip :size="18" class="mr-2" />
                             Choose Files
                         </button>
+
+                        <!-- File Upload Errors from Composable -->
+                        <div v-if="fileErrors.length > 0" class="mb-4">
+                            <div v-for="error in fileErrors" :key="error" class="text-sm text-red-600 dark:text-red-400">
+                                {{ error }}
+                            </div>
+                        </div>
 
                         <!-- Selected Files List -->
                         <div v-if="selectedFiles.length > 0" class="space-y-2">
@@ -185,7 +171,7 @@ onMounted(() => {
                             PowerPoint, CSV. Max 10MB per file.
                         </HelperText>
 
-                        <!-- File Upload Errors -->
+                        <!-- Backend File Upload Errors -->
                         <div v-if="form.errors.files" class="mt-1 text-sm text-red-600 dark:text-red-400">
                             {{ form.errors.files }}
                         </div>
@@ -200,20 +186,19 @@ onMounted(() => {
                     </div>
 
                     <!-- Form Actions -->
-                    <div class="flex items-center justify-between border-t border-gray-200 pt-6 dark:border-gray-700">
-                        <Link
+                    <div class="flex items-center justify-end space-x-4 border-t border-gray-200 pt-6 dark:border-gray-700">
+                        <Button
+                            variant="secondary"
+                            as="link"
                             :href="route('worklogs.index')"
-                            class="rounded-md bg-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-400 dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500"
                         >
                             Cancel
-                        </Link>
-
+                        </Button>
                         <Button
                             type="submit"
                             :disabled="form.processing"
-                            :loading="form.processing"
-                            loading-text="Creating...">
-                            Create Work Log
+                        >
+                            {{ form.processing ? 'Creating...' : 'Create Work Log' }}
                         </Button>
                     </div>
                 </form>
