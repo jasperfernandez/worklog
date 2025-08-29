@@ -21,7 +21,7 @@ class WorklogFileResource extends JsonResource
         return [
             'id' => $this->id,
             'filename' => $this->filename,
-            'original_name' => $this->original_name,
+            'og_filename' => $this->og_filename,
             'file_path' => $this->file_path,
             'file_size' => $this->file_size,
             'mime_type' => $this->mime_type,

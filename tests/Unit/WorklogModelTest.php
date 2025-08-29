@@ -4,7 +4,7 @@ use App\Models\Worklog;
 
 describe('Worklog Model', function () {
     it('has fillable attributes', function () {
-        $worklog = new Worklog;
+        $worklog = Worklog::factory()->make();
 
         expect($worklog->getFillable())->toBe([
             'title',
@@ -15,7 +15,7 @@ describe('Worklog Model', function () {
     });
 
     it('casts log_date to date', function () {
-        $worklog = new Worklog;
+        $worklog = Worklog::factory()->make();
 
         expect($worklog->getCasts())->toHaveKey('log_date');
     });
