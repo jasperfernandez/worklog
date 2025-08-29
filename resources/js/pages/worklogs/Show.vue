@@ -24,6 +24,7 @@ import Heading from '@/components/Heading.vue';
 import Button from '@/components/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Worklog } from '@/types';
+import { formatDate, formatDateTime } from '@/lib/utils';
 
 interface Props {
     worklog: Worklog;
@@ -35,24 +36,6 @@ const deleteWorklog = () => {
     if (confirm('Are you sure you want to delete this work log? This action cannot be undone.')) {
         router.delete(route('worklogs.destroy', props.worklog.id));
     }
-};
-
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-};
-
-const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
 };
 
 const getFileIcon = (mimeType: string) => {

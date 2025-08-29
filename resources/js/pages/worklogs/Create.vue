@@ -7,16 +7,11 @@ import Button from '@/components/Button.vue';
 import { ChevronLeft, X, File, Paperclip } from 'lucide-vue-next';
 import Heading from '@/components/Heading.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { getTodayDate } from '@/lib/utils';
 
 // File upload refs
 const fileInput = ref<HTMLInputElement | null>(null);
 const selectedFiles = ref<File[]>([]);
-
-// Get today's date in YYYY-MM-DD format
-const getTodayDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
-};
 
 const form = useForm({
     title: '',

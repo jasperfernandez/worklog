@@ -6,10 +6,23 @@ import FormInput from '@/components/FormInput.vue';
 import Heading from '@/components/Heading.vue';
 import HelperText from '@/components/HelperText.vue';
 import { Link, useForm } from '@inertiajs/vue3';
-import { ChevronLeft, Save, Trash } from 'lucide-vue-next';
+import {
+    ChevronLeft,
+    Clapperboard,
+    FileArchive,
+    FileAudio2,
+    FileChartPie,
+    FileSpreadsheet,
+    FileText,
+    Image,
+    Paperclip,
+    Save,
+    Trash,
+} from 'lucide-vue-next';
 import { onMounted } from 'vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Worklog } from '@/types';
+import { formatDate } from '@/lib/utils';
 
 interface Props {
     worklog: Worklog;
@@ -31,24 +44,16 @@ const submit = () => {
     });
 };
 
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-};
-
 const getFileIcon = (mimeType: string) => {
-    if (mimeType.startsWith('image/')) return '🖼️';
-    if (mimeType.startsWith('video/')) return '🎥';
-    if (mimeType.startsWith('audio/')) return '🎵';
-    if (mimeType.includes('pdf')) return '📄';
-    if (mimeType.includes('word')) return '📝';
-    if (mimeType.includes('sheet') || mimeType.includes('excel')) return '📊';
-    if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) return '📋';
-    if (mimeType.includes('zip') || mimeType.includes('rar')) return '🗜️';
-    return '📎';
+    if (mimeType.startsWith('image/')) return Image;
+    if (mimeType.startsWith('video/')) return Clapperboard;
+    if (mimeType.startsWith('audio/')) return FileAudio2;
+    if (mimeType.includes('pdf')) return FileText;
+    if (mimeType.includes('word')) return FileText;
+    if (mimeType.includes('sheet') || mimeType.includes('excel')) return FileSpreadsheet;
+    if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) return FileChartPie;
+    if (mimeType.includes('zip') || mimeType.includes('rar')) return FileArchive;
+    return Paperclip;
 };
 
 // Focus on title field when component mounts
@@ -61,7 +66,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <AppLayout :page-title="`Edit: ${worklog.title}`" >
+    <AppLayout :page-title="`Edit: ${worklog.title}`">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="mb-8">
@@ -152,7 +157,7 @@ onMounted(() => {
                             class="flex items-center rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
                         >
                             <div class="mr-3 flex-shrink-0 text-2xl">
-                                {{ getFileIcon(file.mime_type) }}
+                                <component :is="getFileIcon(file.mime_type)" class="text-gray-400 dark:text-gray-500" />
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
@@ -163,7 +168,10 @@ onMounted(() => {
                                 </p>
                             </div>
                             <div class="ml-2 flex-shrink-0">
-                                <button class="text-danger-600 hover:text-danger-500 dark:text-danger-400 dark:hover:text-danger-300" title="Delete file">
+                                <button
+                                    class="text-danger-600 hover:text-danger-500 dark:text-danger-400 dark:hover:text-danger-300"
+                                    title="Delete file"
+                                >
                                     <Trash :size="16" />
                                 </button>
                             </div>
@@ -171,8 +179,8 @@ onMounted(() => {
                     </div>
 
                     <Banner variant="info" class="mt-4">
-                        <strong>Note:</strong> File management functionality will be available once file upload is implemented. For now, you can
-                        view existing files but cannot add, remove, or replace them.
+                        <strong>Note:</strong> File management functionality will be available once file upload is implemented. For now, you can view
+                        existing files but cannot add, remove, or replace them.
                     </Banner>
                 </div>
             </div>
@@ -196,9 +204,7 @@ onMounted(() => {
                         </div>
                         <div>
                             <dt class="font-medium text-gray-600 dark:text-gray-400">Attached Files</dt>
-                            <dd class="text-gray-900 dark:text-white">
-                                {{ worklog.files.length }} file{{ worklog.files.length !== 1 ? 's' : '' }}
-                            </dd>
+                            <dd class="text-gray-900 dark:text-white">{{ worklog.files.length }} file{{ worklog.files.length !== 1 ? 's' : '' }}</dd>
                         </div>
                     </dl>
                 </div>

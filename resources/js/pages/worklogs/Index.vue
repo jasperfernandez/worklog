@@ -8,24 +8,12 @@ import { Link, router } from '@inertiajs/vue3';
 import { FileText, Plus } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
 import Button from '@/components/Button.vue';
-import { Worklog } from '@/types';
+import { Paginated, Worklog } from '@/types';
 import AppLayout from '@/layouts/AppLayout.vue';
-
-interface PaginatedWorklogs {
-    data: Worklog[];
-    current_page: number;
-    last_page: number;
-    total: number;
-    per_page: number;
-    links: Array<{
-        url: string | null;
-        label: string;
-        active: boolean;
-    }>;
-}
+import { formatDate } from '@/lib/utils';
 
 interface Props {
-    worklogs: PaginatedWorklogs;
+    worklogs: Paginated<Worklog>;
     filters: {
         search?: string;
         from_date?: string;
@@ -57,7 +45,7 @@ const updateFilters = () => {
 };
 
 // Debounced search
-let searchTimeout: NodeJS.Timeout;
+let searchTimeout: number;
 watch(search, () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(updateFilters, 500);
@@ -71,14 +59,6 @@ const clearFilters = () => {
     fromDate.value = '';
     toDate.value = '';
     updateFilters();
-};
-
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
 };
 
 const truncateContent = (content: string, maxLength: number = 150) => {
