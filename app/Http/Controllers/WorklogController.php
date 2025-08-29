@@ -20,12 +20,6 @@ use Throwable;
 
 class WorklogController extends Controller
 {
-    public function __construct(
-        private StoreWorklogAction $storeWorklogAction,
-        private UpdateWorklogAction $updateWorklogAction
-    ) {
-    }
-
     /**
      * Display a listing of the resource.
      */
