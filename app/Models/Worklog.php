@@ -2,13 +2,26 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\WorklogFactory;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property-read int $id
+ * @property-read string $title
+ * @property-read string $content
+ * @property-read DateTimeInterface $log_date
+ * @property-read int $user_id
+ * @property-read CarbonImmutable $created_at
+ * @property-read CarbonImmutable $updated_at
+ */
 class Worklog extends Model
 {
+    /** @use HasFactory<WorklogFactory> */
     use HasFactory;
 
     /**

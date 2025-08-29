@@ -2,13 +2,27 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\WorklogFileFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property-read int $id
+ * @property-read string $filename
+ * @property-read string $original_name
+ * @property-read string $file_path
+ * @property-read int $file_size
+ * @property-read string $mime_type
+ * @property-read int $worklog_id
+ * @property-read CarbonImmutable $created_at
+ * @property-read CarbonImmutable $updated_at
+ */
 class WorklogFile extends Model
 {
+    /** @use HasFactory<WorklogFileFactory> */
     use HasFactory;
 
     /**
