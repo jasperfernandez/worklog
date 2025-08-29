@@ -15,8 +15,6 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        ds($recentWorklogs);
-
         return inertia('Dashboard', [
             'recentWorklogs' => $recentWorklogs,
         ]);

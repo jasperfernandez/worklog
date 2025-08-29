@@ -12,13 +12,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property-read int $id
  * @property-read string $filename
- * @property-read string $original_name
+ * @property-read string $og_filename
  * @property-read string $file_path
  * @property-read int $file_size
  * @property-read string $mime_type
  * @property-read int $worklog_id
  * @property-read CarbonImmutable $created_at
  * @property-read CarbonImmutable $updated_at
+ *
+ * @property-read string $human_file_size
  */
 class WorklogFile extends Model
 {
@@ -32,7 +34,7 @@ class WorklogFile extends Model
      */
     protected $fillable = [
         'filename',
-        'original_name',
+        'og_filename',
         'file_path',
         'file_size',
         'mime_type',

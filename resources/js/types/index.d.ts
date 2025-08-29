@@ -67,7 +67,7 @@ export interface Worklog {
 export interface WorklogFile {
     id: number;
     filename: string;
-    original_name: string;
+    og_filename: string;
     file_size: number;
     mime_type: string;
     human_file_size: string;

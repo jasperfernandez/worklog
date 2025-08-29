@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\StoreWorklogAction;
+use App\Actions\UpdateWorklogAction;
 use App\Http\Requests\StoreWorklogRequest;
 use App\Http\Requests\UpdateWorklogRequest;
 use App\Http\Resources\WorklogResource;
@@ -14,9 +16,16 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Throwable;
 
 class WorklogController extends Controller
 {
+    public function __construct(
+        private StoreWorklogAction $storeWorklogAction,
+        private UpdateWorklogAction $updateWorklogAction
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -61,34 +70,18 @@ class WorklogController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @throws Throwable
      */
-    public function store(StoreWorklogRequest $request): RedirectResponse
+    public function store(StoreWorklogRequest $request, StoreWorklogAction $action): RedirectResponse
     {
         $validated = $request->validated();
 
-        // Create the worklog
-        $worklog = $request->user()->worklogs()->create([
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-            'log_date' => $validated['log_date'],
-        ]);
-
-        // Handle file uploads if any
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $filename = uniqid().'_'.time().'.'.$file->getClientOriginalExtension();
-                $filePath = $file->storeAs('worklog-files', $filename, 'local');
-
-                WorklogFile::create([
-                    'filename' => $filename,
-                    'original_name' => $file->getClientOriginalName(),
-                    'file_path' => $filePath,
-                    'file_size' => $file->getSize(),
-                    'mime_type' => $file->getMimeType(),
-                    'worklog_id' => $worklog->id,
-                ]);
-            }
-        }
+        $action->execute(
+            $request->user(),
+            $validated,
+            $request->hasFile('files') ? $request->file('files') : null
+        );
 
         return to_route('worklogs.index')
             ->with('success', 'Worklog created.');
@@ -124,52 +117,20 @@ class WorklogController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws Throwable
      */
-    public function update(UpdateWorklogRequest $request, Worklog $worklog): RedirectResponse
+    public function update(UpdateWorklogRequest $request, Worklog $worklog, UpdateWorklogAction $action): RedirectResponse
     {
         Gate::authorize('update', $worklog);
 
         $validated = $request->validated();
 
-        // Update worklog basic info
-        $worklog->update([
-            'title' => $validated['title'],
-            'content' => $validated['content'],
-            'log_date' => $validated['log_date'],
-        ]);
-
-        // Handle file removals
-        if (isset($validated['remove_files']) && is_array($validated['remove_files'])) {
-            $filesToRemove = WorklogFile::whereIn('id', $validated['remove_files'])
-                ->where('worklog_id', $worklog->id)
-                ->get();
-
-            foreach ($filesToRemove as $file) {
-                // Delete from storage
-                if (Storage::disk('local')->exists($file->file_path)) {
-                    Storage::disk('local')->delete($file->file_path);
-                }
-                // Delete from database
-                $file->delete();
-            }
-        }
-
-        // Handle new file uploads
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $filename = uniqid().'_'.time().'.'.$file->getClientOriginalExtension();
-                $filePath = $file->storeAs('worklog-files', $filename, 'local');
-
-                WorklogFile::create([
-                    'filename' => $filename,
-                    'original_name' => $file->getClientOriginalName(),
-                    'file_path' => $filePath,
-                    'file_size' => $file->getSize(),
-                    'mime_type' => $file->getMimeType(),
-                    'worklog_id' => $worklog->id,
-                ]);
-            }
-        }
+        $action->execute(
+            $worklog,
+            $validated,
+            $request->hasFile('files') ? $request->file('files') : null,
+            $validated['remove_files'] ?? null
+        );
 
         return to_route('worklogs.show', $worklog)
             ->with('success', 'Worklog updated.');
@@ -208,7 +169,7 @@ class WorklogController extends Controller
 
         return response()->download(
             Storage::disk('local')->path($worklogFile->file_path),
-            $worklogFile->original_name
+            $worklogFile->og_filename
         );
     }
 }

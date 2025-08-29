@@ -20,7 +20,7 @@ class WorklogFileFactory extends Factory
 
         return [
             'filename' => $filename,
-            'original_name' => fake()->word().'.txt',
+            'og_filename' => fake()->word().'.txt',
             'file_path' => 'worklog-files/'.$filename,
             'file_size' => fake()->numberBetween(1000, 1000000),
             'mime_type' => 'text/plain',

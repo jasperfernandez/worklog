@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('worklog_files', function (Blueprint $table) {
             $table->id();
             $table->string('filename');
-            $table->string('original_name');
+            $table->string('og_filename');
             $table->string('file_path');
             $table->unsignedBigInteger('file_size');
             $table->string('mime_type');
