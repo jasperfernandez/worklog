@@ -100,7 +100,7 @@ describe('Worklog Creation', function () {
         $response = $this->actingAs($this->user)->post(route('worklogs.store'), $worklogData);
 
         $response->assertRedirect(route('worklogs.index'));
-        $response->assertSessionHas('success', 'Worklog created successfully!');
+        $response->assertSessionHas('success', 'Worklog created.');
 
         $this->assertDatabaseHas('worklogs', [
             'title' => 'Test Worklog',
@@ -202,7 +202,7 @@ describe('Worklog Editing', function () {
         $response = $this->actingAs($this->user)->put(route('worklogs.update', $worklog), $updateData);
 
         $response->assertRedirect(route('worklogs.show', $worklog));
-        $response->assertSessionHas('success', 'Worklog updated successfully!');
+        $response->assertSessionHas('success', 'Worklog updated.');
 
         $this->assertDatabaseHas('worklogs', [
             'id' => $worklog->id,
@@ -248,7 +248,7 @@ describe('Worklog Deletion', function () {
         $response = $this->actingAs($this->user)->delete(route('worklogs.destroy', $worklog));
 
         $response->assertRedirect(route('worklogs.index'));
-        $response->assertSessionHas('success', 'Worklog deleted successfully!');
+        $response->assertSessionHas('success', 'Worklog deleted.');
 
         $this->assertDatabaseMissing('worklogs', ['id' => $worklog->id]);
     });
