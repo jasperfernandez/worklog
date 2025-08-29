@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configurePasswordValidation();
         $this->configureVite();
         $this->configureScheme();
+        $this->configureResources();
     }
 
     /**
@@ -86,5 +88,13 @@ class AppServiceProvider extends ServiceProvider
         if (app()->isProduction()) {
             URL::forceHttps();
         }
+    }
+
+    /**
+     * Configure resources.
+     */
+    private function configureResources(): void
+    {
+        JsonResource::withoutWrapping();
     }
 }
