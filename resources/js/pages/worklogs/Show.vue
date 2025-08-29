@@ -1,43 +1,35 @@
 <script setup lang="ts">
-import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import ButtonLink from '@/components/ButtonLink.vue';
-import { Plus, Paperclip, Calendar, SquarePen, Trash, List, ChevronLeft, FileDown } from 'lucide-vue-next';
+import {
+    Plus,
+    Paperclip,
+    Calendar,
+    SquarePen,
+    Trash,
+    List,
+    ChevronLeft,
+    Download,
+    FileText,
+    FileSpreadsheet,
+    FileArchive,
+    Image,
+    Clapperboard,
+    FileChartPie,
+    FileAudio2,
+} from 'lucide-vue-next';
 import BodyText from '@/components/BodyText.vue';
 import HelperText from '@/components/HelperText.vue';
 import Heading from '@/components/Heading.vue';
 import Button from '@/components/Button.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-
-interface WorklogFile {
-    id: number;
-    filename: string;
-    original_name: string;
-    file_size: number;
-    mime_type: string;
-    human_file_size: string;
-}
-
-interface Worklog {
-    id: number;
-    title: string;
-    content: string;
-    log_date: string;
-    created_at: string;
-    updated_at: string;
-    files: WorklogFile[];
-}
+import { Worklog } from '@/types';
 
 interface Props {
     worklog: Worklog;
 }
 
 const props = defineProps<Props>();
-const page = usePage();
-const user = page.props.auth?.user;
-
-const logout = () => {
-    router.post('/logout');
-};
 
 const deleteWorklog = () => {
     if (confirm('Are you sure you want to delete this work log? This action cannot be undone.')) {
@@ -64,15 +56,15 @@ const formatDateTime = (dateString: string) => {
 };
 
 const getFileIcon = (mimeType: string) => {
-    if (mimeType.startsWith('image/')) return '🖼️';
-    if (mimeType.startsWith('video/')) return '🎥';
-    if (mimeType.startsWith('audio/')) return '🎵';
-    if (mimeType.includes('pdf')) return '📄';
-    if (mimeType.includes('word')) return '📝';
-    if (mimeType.includes('sheet') || mimeType.includes('excel')) return '📊';
-    if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) return '📋';
-    if (mimeType.includes('zip') || mimeType.includes('rar')) return '🗜️';
-    return '📎';
+    if (mimeType.startsWith('image/')) return Image;
+    if (mimeType.startsWith('video/')) return Clapperboard;
+    if (mimeType.startsWith('audio/')) return FileAudio2;
+    if (mimeType.includes('pdf')) return FileText;
+    if (mimeType.includes('word')) return FileText;
+    if (mimeType.includes('sheet') || mimeType.includes('excel')) return FileSpreadsheet;
+    if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) return FileChartPie;
+    if (mimeType.includes('zip') || mimeType.includes('rar')) return FileArchive;
+    return Paperclip;
 };
 
 const downloadFile = (fileId: number) => {
@@ -138,10 +130,7 @@ const downloadFile = (fileId: number) => {
             </div>
 
             <!-- Files Section -->
-            <div
-                v-if="worklog.files.length > 0"
-                class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800"
-            >
+            <div v-if="worklog.files.length > 0" class="rounded-lg border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
                 <div class="p-6">
                     <h2 class="mb-4 text-lg font-medium text-gray-900 dark:text-white">Attached Files ({{ worklog.files.length }})</h2>
 
@@ -152,7 +141,7 @@ const downloadFile = (fileId: number) => {
                             class="flex items-center rounded-lg border border-gray-200 p-4 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700"
                         >
                             <div class="mr-3 flex-shrink-0 text-2xl">
-                                {{ getFileIcon(file.mime_type) }}
+                                <component :is="getFileIcon(file.mime_type)" class="text-gray-400 dark:text-gray-500" />
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-sm font-medium text-gray-900 dark:text-white">
@@ -168,7 +157,7 @@ const downloadFile = (fileId: number) => {
                                     class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
                                     title="Download file"
                                 >
-                                    <FileDown />
+                                    <Download />
                                 </button>
                             </div>
                         </div>
