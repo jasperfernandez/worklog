@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import BodyText from '@/components/BodyText.vue';
+import Button from '@/components/Button.vue';
+import ButtonLink from '@/components/ButtonLink.vue';
 import FormInput from '@/components/FormInput.vue';
 import Heading from '@/components/Heading.vue';
 import HelperText from '@/components/HelperText.vue';
-import ButtonLink from '@/components/ButtonLink.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { formatDate } from '@/lib/utils';
+import { Paginated, Worklog } from '@/types';
 import { Link, router } from '@inertiajs/vue3';
 import { FileText, Plus } from 'lucide-vue-next';
 import { ref, watch } from 'vue';
-import Button from '@/components/Button.vue';
-import { Paginated, Worklog } from '@/types';
-import AppLayout from '@/layouts/AppLayout.vue';
-import { formatDate } from '@/lib/utils';
 
 interface Props {
     worklogs: Paginated<Worklog>;
@@ -67,7 +67,7 @@ const truncateContent = (content: string, maxLength: number = 150) => {
 </script>
 
 <template>
-    <AppLayout page-title="Work Logs" >
+    <AppLayout page-title="Work Logs">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
@@ -120,7 +120,11 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                             <div class="flex-1">
                                 <div class="mb-2 flex items-center space-x-2">
                                     <Heading variant="sm">
-                                        <Link :href="route('worklogs.show', worklog.id)" class="hover:text-indigo-600 dark:hover:text-indigo-400">
+                                        <Link
+                                            :href="route('worklogs.show', worklog.id)"
+                                            class="hover:text-indigo-600 dark:hover:text-indigo-400"
+                                            prefetch
+                                        >
                                             {{ worklog.title }}
                                         </Link>
                                     </Heading>
@@ -128,8 +132,8 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                                         v-if="worklog.files.length > 0"
                                         class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                                     >
-                                    {{ worklog.files.length }} file{{ worklog.files.length !== 1 ? 's' : '' }}
-                                </span>
+                                        {{ worklog.files.length }} file{{ worklog.files.length !== 1 ? 's' : '' }}
+                                    </span>
                                 </div>
 
                                 <p class="mb-3 text-gray-600 dark:text-gray-300">
@@ -174,11 +178,11 @@ const truncateContent = (content: string, maxLength: number = 150) => {
                                 :key="link.label"
                                 :href="link.url || '#'"
                                 :class="{
-                                'bg-indigo-600 text-white': link.active,
-                                'bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700':
-                                    !link.active && link.url,
-                                'cursor-not-allowed bg-gray-200 text-gray-400 dark:bg-gray-600 dark:text-gray-500': !link.url,
-                            }"
+                                    'bg-indigo-600 text-white': link.active,
+                                    'bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700':
+                                        !link.active && link.url,
+                                    'cursor-not-allowed bg-gray-200 text-gray-400 dark:bg-gray-600 dark:text-gray-500': !link.url,
+                                }"
                                 class="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium dark:border-gray-600"
                             >
                                 {{ link.label === '&laquo; Previous' ? '← Previous' : link.label === 'Next &raquo;' ? 'Next →' : link.label }}
