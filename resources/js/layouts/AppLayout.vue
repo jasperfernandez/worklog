@@ -17,7 +17,7 @@ const logout = () => {
 <template>
     <Head :title="props.pageTitle" />
 
-    <div class="min-h-screen bg-background dark:bg-background-dark">
+    <div class="h-screen bg-background dark:bg-background-dark">
         <!-- Navigation -->
         <nav class="bg-surface shadow-sm dark:bg-surface-dark">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -62,7 +62,7 @@ const logout = () => {
             </div>
         </nav>
 
-        <main class="py-10">
+        <main class="py-10 overflow-y-auto h-[calc(100vh-4rem)]">
             <slot />
         </main>
     </div>
