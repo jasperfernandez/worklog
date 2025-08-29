@@ -29,6 +29,7 @@ const baseClass = `rounded-md px-3 py-2 text-center text-sm font-semibold text-w
 <template>
     <Link
         :href="props.href"
+        prefetch
         :class="cn(baseClass, props.class)"
     >
        <slot />

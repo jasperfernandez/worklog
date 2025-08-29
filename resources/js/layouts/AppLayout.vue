@@ -26,6 +26,7 @@ const logout = () => {
                         <Link
                             :href="route('dashboard')"
                             class="text-xl font-semibold text-gray-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400"
+                            prefetch
                         >
                             Worklog
                         </Link>
@@ -33,12 +34,14 @@ const logout = () => {
                             <Link
                                 :href="route('dashboard')"
                                 :class="page.url === '/dashboard' ? 'font-medium text-indigo-600 dark:text-indigo-400' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+                                prefetch
                             >
                                 Dashboard
                             </Link>
                             <Link
                                 :href="route('worklogs.index')"
                                 :class="page.url.startsWith('/worklogs') ? 'font-medium text-indigo-600 dark:text-indigo-400' : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+                                prefetch
                             >
                                 Work Logs
                             </Link>
