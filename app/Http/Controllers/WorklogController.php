@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWorklogRequest;
 use App\Http\Requests\UpdateWorklogRequest;
+use App\Http\Resources\WorklogResource;
 use App\Models\Worklog;
 use App\Models\WorklogFile;
 use Illuminate\Http\RedirectResponse;
@@ -43,7 +44,7 @@ class WorklogController extends Controller
             ->withQueryString();
 
         return Inertia::render('worklogs/Index', [
-            'worklogs' => $worklogs,
+            'worklogs' => WorklogResource::collection($worklogs),
             'filters' => $request->only(['search', 'from_date', 'to_date']),
         ]);
     }
@@ -101,7 +102,7 @@ class WorklogController extends Controller
         $worklog->load('files');
 
         return inertia('worklogs/Show', [
-            'worklog' => $worklog,
+            'worklog' => new WorklogResource($worklog),
         ]);
     }
 
@@ -115,7 +116,7 @@ class WorklogController extends Controller
         $worklog->load('files');
 
         return inertia('worklogs/Edit', [
-            'worklog' => $worklog,
+            'worklog' => new WorklogResource($worklog),
         ]);
     }
 
