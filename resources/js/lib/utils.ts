@@ -11,6 +11,7 @@ export const getTodayDate = () => {
     return today.toISOString().split('T')[0];
 };
 
+// Format a date string to a more readable format, e.g., January 1, 2023
 export const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -19,6 +20,7 @@ export const formatDate = (dateString: string): string => {
     });
 };
 
+// Format a date string to a more readable format with time, e.g., Jan 1, 2023, 10:00 AM
 export const formatDateTime = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('en-US', {
         year: 'numeric',
